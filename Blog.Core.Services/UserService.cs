@@ -11,26 +11,31 @@ namespace Blog.Core.Services
 {
     public class UserService : IUserService
     {
-        UserRepository userRepository = new UserRepository();
+        private  IUserRepository _userService =new UserRepository();
+
+        //public UserService(IUserRepository userService)
+        //{
+        //    _userService = userService;
+        //}
         public int Add(User user)
         {
             try
             {
-              return  userRepository.Add(user);
+                return _userService.Add(user);
             }
             catch (Exception)
             {
 
                 throw new NotImplementedException();
             }
-          
+
         }
 
         public int Delete(int Id)
         {
             try
             {
-                return userRepository.Delete(Id);
+                return _userService.Delete(Id);
             }
             catch (Exception)
             {
@@ -43,7 +48,7 @@ namespace Blog.Core.Services
         {
             try
             {
-                return userRepository.GetUsers(Id);
+                return _userService.GetUsers(Id);
             }
             catch (Exception)
             {
@@ -56,7 +61,7 @@ namespace Blog.Core.Services
         {
             try
             {
-                return userRepository.Update(user);
+                return _userService.Update(user);
             }
             catch (Exception)
             {
