@@ -1,5 +1,7 @@
+using Blog.core.IRepository;
 using Blog.Core.Auth;
 using Blog.Core.IServices;
+using Blog.Core.Repository;
 using Blog.Core.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -67,6 +69,9 @@ builder.Services.AddSwaggerGen(c=> {
     var securityRequirement = new OpenApiSecurityRequirement { { securityScheme, new string[] { } } };
     c.AddSecurityRequirement(securityRequirement);
 });
+//IOC
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IUserService, UserService>();
 
 
 var app = builder.Build();

@@ -14,14 +14,12 @@ namespace Blog.core.Controllers
     public class UserController : ControllerBase
     {
 
-        private  IUserService _userService =new UserService();
-        /// <summary>
-        /// 初始化
-        /// </summary>      
-        //public UserController(IUserService userService)
-        //{
-        //    _userService = userService;
-        //}
+        private readonly IUserService _userService ;
+
+        public UserController(IUserService userService)
+        {
+            _userService = userService;
+        }
 
         /// <summary>
         /// 增加

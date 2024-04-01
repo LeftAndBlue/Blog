@@ -11,12 +11,12 @@ namespace Blog.Core.Services
 {
     public class UserService : IUserService
     {
-        private  IUserRepository _userService =new UserRepository();
+        private  IUserRepository _userService ;
 
-        //public UserService(IUserRepository userService)
-        //{
-        //    _userService = userService;
-        //}
+        public UserService(IUserRepository userService)
+        {
+            _userService = userService;
+        }
         public int Add(User user)
         {
             try
