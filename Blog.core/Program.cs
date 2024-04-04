@@ -1,12 +1,18 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Autofac.Extras.DynamicProxy;
 using Blog.core.IRepository;
+using Blog.Core.AOP;
 using Blog.Core.Auth;
 using Blog.Core.IServices;
+using Blog.Core.Model.Models;
 using Blog.Core.Repository;
 using Blog.Core.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using System.Security.AccessControl;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,7 +50,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("SystemOrAdmin", policy => policy.RequireRole("Admin", "System"));
 });
 #endregion
-
+#region Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c=> {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Web API", Version = "v1" });
@@ -69,10 +75,43 @@ builder.Services.AddSwaggerGen(c=> {
     var securityRequirement = new OpenApiSecurityRequirement { { securityScheme, new string[] { } } };
     c.AddSecurityRequirement(securityRequirement);
 });
+#endregion
 //IOC
-builder.Services.AddTransient<IUserRepository, UserRepository>();
-builder.Services.AddTransient<IUserService, UserService>();
+//builder.Services.AddTransient<IUserRepository, UserRepository>();
+//builder.Services.AddTransient<IUserService, UserService>();
+#region AOP
 
+var basePath = AppContext.BaseDirectory;
+var servicesDllFile = Path.Combine(basePath, "Blog.Core.Services.dll"); //服务层
+var repositoryDllFile = Path.Combine(basePath, "Blog.Core.Repository.dll"); //仓储层
+if (!(File.Exists(servicesDllFile) && File.Exists(repositoryDllFile)))
+{
+    throw new Exception("Repository.dll和service.dll 丢失，因为项目解耦了，所以需要先F6编译，再F5运行，请检查 bin 文件夹，并拷贝。");
+}
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Host.ConfigureContainer<ContainerBuilder>(build =>
+{
+    // AOP 
+    var cacheType = new List<Type>();
+    build.RegisterType<BlogLogAOP>();
+    cacheType.Add(typeof(BlogLogAOP));
+
+    // 获取 Service.dll 程序集服务，并注册
+    var assemblysServices = Assembly.LoadFrom(servicesDllFile);
+    build.RegisterAssemblyTypes(assemblysServices)
+                .AsImplementedInterfaces()
+                .InstancePerDependency()
+                .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy;
+                .InterceptedBy(cacheType.ToArray());//允许将拦截器服务的列表分配给注册。
+
+    // 获取 Repository.dll 程序集服务，并注册
+    var assemblysRepository = Assembly.LoadFrom(repositoryDllFile);
+    build.RegisterAssemblyTypes(assemblysRepository)
+            .AsImplementedInterfaces()
+            .InstancePerDependency();
+
+});
+#endregion
 
 var app = builder.Build();
 app.UseRouting();
