@@ -2,12 +2,14 @@
 using Blog.Core.Auth;
 using Blog.Core.IServices;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Core.Controllers
 {
     [Route("[controller]/[action]")]
     [ApiController]
+    [EnableCors("CorsPolicy")] //允许跨域
     public class UserInfoController : ControllerBase
     {
         private readonly JwtHelper _jwt;

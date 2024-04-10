@@ -1,9 +1,11 @@
 using Autofac;
+using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.DynamicProxy;
 using Blog.core.IRepository;
 using Blog.Core.AOP;
 using Blog.Core.Auth;
+using Blog.Core.Helper;
 using Blog.Core.IServices;
 using Blog.Core.Model.Models;
 using Blog.Core.Repository;
@@ -20,6 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddMemoryCache();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 #region JWT服务
 // 注册JWT服务
@@ -93,9 +96,14 @@ builder.Host.ConfigureContainer<ContainerBuilder>(build =>
 {
     // AOP 
     var cacheType = new List<Type>();
-    build.RegisterType<BlogLogAOP>();
+    build.RegisterType<BlogLogAOP>();    
     cacheType.Add(typeof(BlogLogAOP));
+    build.RegisterType<BlogCacheAOP>();
+    cacheType.Add(typeof(BlogCacheAOP));
 
+    build.RegisterType<MemoryCaching>().As<ICaching>()
+           .AsImplementedInterfaces()
+           .InstancePerDependency();
     // 获取 Service.dll 程序集服务，并注册
     var assemblysServices = Assembly.LoadFrom(servicesDllFile);
     build.RegisterAssemblyTypes(assemblysServices)
@@ -110,11 +118,18 @@ builder.Host.ConfigureContainer<ContainerBuilder>(build =>
             .AsImplementedInterfaces()
             .InstancePerDependency();
 
+   
 });
 #endregion
-
+//跨域
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().WithExposedHeaders("X-Pagination"));
+});
 var app = builder.Build();
+app.UseStaticFiles();
 app.UseRouting();
+app.UseCors("CorsPolicy");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.core.Controllers
@@ -8,6 +9,7 @@ namespace Blog.core.Controllers
     [Route("[controller]")]
     [Authorize(Roles ="Admin")]
     [Authorize(Roles ="User")]
+    [EnableCors("CorsPolicy")] //‘ –ÌøÁ”Ú
     public class WeatherForecastController : ControllerBase 
     {
         private static readonly string[] Summaries = new[]

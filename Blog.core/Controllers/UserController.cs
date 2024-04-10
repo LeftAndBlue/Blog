@@ -5,12 +5,14 @@ using Blog.Core.Model.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Blog.Core.Services;
+using Microsoft.AspNetCore.Cors;
 namespace Blog.core.Controllers
 {
 
     [Route("[controller]/[action]")]
     [ApiController]
     //[Authorize]
+    [EnableCors("CorsPolicy")] //允许跨域
     public class UserController : ControllerBase
     {
 

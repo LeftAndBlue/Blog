@@ -11,3 +11,9 @@ dotnet_diagnostic.CS8618.severity = silent
 
 # CS8600: 将 null 字面量或可能为 null 的值转换为非 null 类型。
 dotnet_diagnostic.CS8600.severity = silent
+
+# IDE0078: 使用模式匹配
+dotnet_diagnostic.IDE0078.severity = silent
+
+# CS7023: “is”或“as”运算符的第二个操作数不能是静态类型
+dotnet_diagnostic.CS7023.severity = silent
