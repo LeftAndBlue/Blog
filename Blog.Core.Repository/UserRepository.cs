@@ -11,21 +11,21 @@ namespace Blog.Core.Repository
             return line;
         }
 
-        public int Delete(int UserId)
+        public int Delete(string UserId)
         {
             var line = db.Deleteable<User>(new User
             {
-                Id = UserId
+                ID = UserId
             }).ExecuteCommand();
             return line;
         }
 
-        public List<User> GetUsers(int Id)
+        public List<User> GetUsers(string Id)
         {
             List<User> users;
-            if (Id is not 0)
+            if (Id is not null)
             {
-                users = db.Queryable<User>().Where(it => it.Id == Id).ToList();
+                users = db.Queryable<User>().Where(it => it.ID == Id).ToList();
             }
             else
             {
@@ -38,6 +38,13 @@ namespace Blog.Core.Repository
         {
             var res = db.Updateable<User>(user).ExecuteCommand();
             return res;
+        }
+
+        public User GetUserInfo(string Email,string Password)
+        {
+            User user = db.Queryable<User>().Where(r => r.EMAIL == Email && r.PASSWORD == Password).First();
+          
+            return (User)user;
         }
     }
 }

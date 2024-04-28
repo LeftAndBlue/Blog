@@ -29,15 +29,15 @@ namespace Blog.Core.Auth
         /// <param name="username"></param>
         /// <param name="mobile"></param>
         /// <returns></returns>
-        public string CreateToken(string username, string mobile)
+        public string CreateToken(string key1, string key2)
         {
             try
             {
                 // 1. 定义需要使用到的Claims
                 var claims = new[]
                 {
-                    new Claim("username", username),
-                    new Claim("mobile", mobile),
+                    new Claim("username", key1),
+                    new Claim("mobile", key2),
                     /* 可以保存自己想要信息，传参进来即可
                     new Claim("sex", "sex"),
                     new Claim("limit", "limit"),

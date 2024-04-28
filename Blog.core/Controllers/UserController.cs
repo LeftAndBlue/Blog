@@ -41,7 +41,7 @@ namespace Blog.core.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
-        public int DeleteUser(int id)
+        public int DeleteUser(string id)
         {
             return _userService.Delete(id);
         }
@@ -61,7 +61,7 @@ namespace Blog.core.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public List<User> GetUser(int id)
+        public List<User> GetUser(string id)
         {
             return _userService.GetUsers(id);
         }

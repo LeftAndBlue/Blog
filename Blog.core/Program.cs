@@ -1,20 +1,12 @@
 using Autofac;
-using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.DynamicProxy;
-using Blog.core.IRepository;
 using Blog.Core.AOP;
 using Blog.Core.Auth;
-using Blog.Core.Helper;
-using Blog.Core.IServices;
-using Blog.Core.Model.Models;
-using Blog.Core.Repository;
-using Blog.Core.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using System.Security.AccessControl;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -98,12 +90,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>(build =>
     var cacheType = new List<Type>();
     build.RegisterType<BlogLogAOP>();    
     cacheType.Add(typeof(BlogLogAOP));
-    build.RegisterType<BlogCacheAOP>();
-    cacheType.Add(typeof(BlogCacheAOP));
-
-    build.RegisterType<MemoryCaching>().As<ICaching>()
-           .AsImplementedInterfaces()
-           .InstancePerDependency();
+   
     // 获取 Service.dll 程序集服务，并注册
     var assemblysServices = Assembly.LoadFrom(servicesDllFile);
     build.RegisterAssemblyTypes(assemblysServices)

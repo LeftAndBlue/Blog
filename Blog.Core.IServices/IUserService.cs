@@ -5,8 +5,10 @@ namespace Blog.Core.IServices
     public interface IUserService
     {
         int Add(User user);
-        int Delete(int Id);
+        int Delete(string Id);
         int Update(User user);
-        List<User> GetUsers(int Id);
+        List<User> GetUsers(string Id);
+        bool loginCheck(string EMAIL, string PASSWORD);
+        User GetUser(string EMAIL, string PASSWORD);
     }
 }

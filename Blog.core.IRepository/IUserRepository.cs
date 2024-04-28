@@ -10,8 +10,9 @@ namespace Blog.core.IRepository
     public interface IUserRepository
     {
         int Add(User user);
-        int Delete(int Id);
+        int Delete(string Id);
         int Update(User user);
-        List<User> GetUsers(int Id);
+        List<User> GetUsers(string Id);
+        User GetUserInfo(string Email, string Password);
     }
 }

@@ -7,6 +7,7 @@ using Blog.Core.IServices;
 using Blog.Core.Repository;
 using Blog.Core.Model.Models;
 using Blog.core.IRepository;
+using System.Data;
 namespace Blog.Core.Services
 {
     public class UserService : IUserService
@@ -31,7 +32,7 @@ namespace Blog.Core.Services
 
         }
 
-        public int Delete(int Id)
+        public int Delete(string Id)
         {
             try
             {
@@ -44,7 +45,7 @@ namespace Blog.Core.Services
             }
         }
 
-        public List<User> GetUsers(int Id)
+        public List<User> GetUsers(string Id)
         {
             try
             {
@@ -68,6 +69,24 @@ namespace Blog.Core.Services
 
                 throw new NotImplementedException();
             }
+        }
+        public bool loginCheck(string EMAIL, string PASSWORD)
+        {
+            User user = _userService.GetUserInfo(EMAIL, PASSWORD);
+            if (user == null)
+            {
+                return false;
+            }
+
+            user.LASTLOGINTIME = DateTime.Now;
+            _userService.Update(user);
+
+            return true;
+
+        }
+        public User GetUser(string EMAIL, string PASSWORD)
+        {
+            return _userService.GetUserInfo(EMAIL, PASSWORD);
         }
     }
 }
