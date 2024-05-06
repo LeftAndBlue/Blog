@@ -42,7 +42,10 @@ builder.Services.AddAuthorization(options =>
 "SystemOrAdmin" 策略要求用户必须拥有 "Admin" 或者 "System" 角色之一才能访问相关资源。***/
     options.AddPolicy("Client", policy => policy.RequireRole("Client").Build());
     options.AddPolicy("Admin", policy => policy.RequireRole("Admin").Build());
+    options.AddPolicy("System", policy => policy.RequireRole("System").Build());
     options.AddPolicy("SystemOrAdmin", policy => policy.RequireRole("Admin", "System"));
+    options.AddPolicy("ClientOrAdmin", policy => policy.RequireRole("Admin", "Client"));
+
 });
 #endregion
 #region Swagger
